@@ -10,8 +10,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir \
+    diffusers>=0.30.0 \
+    transformers>=4.40.0 \
+    accelerate>=0.30.0 \
+    "gradio==5.25.0" \
+    sentencepiece>=0.2.0 \
+    protobuf>=3.20.0
 
 COPY app.py .
 
