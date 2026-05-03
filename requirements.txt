@@ -1,8 +1,6 @@
---extra-index-url https://download.pytorch.org/whl/cu121
-torch>=2.2.0
 diffusers>=0.30.0
 transformers>=4.40.0
 accelerate>=0.30.0
-gradio>=4.36.0
+gradio==5.25.0
 sentencepiece>=0.2.0
 protobuf>=3.20.0
