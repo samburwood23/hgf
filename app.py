@@ -1,20 +1,14 @@
 import torch
 import gradio as gr
-from diffusers import StableDiffusionPipeline
+from diffusers import FluxPipeline
 
 # ---------------------------------------------------------------------------
-# Configuration — edit these two values to match your LoRA training setup
+# Configuration — update LORA_MODEL_PATH once your LoRA is uploaded to HF
 # ---------------------------------------------------------------------------
-BASE_MODEL_ID = "runwayml/stable-diffusion-v1-5"
+BASE_MODEL_ID = "black-forest-labs/FLUX.1-dev"
 LORA_MODEL_PATH = "samburwood23/my-painting-style-lora"  # your HF model repo
-TRIGGER_KEYWORD = "samburwood_style"                      # word used during LoRA training
+TRIGGER_KEYWORD = "SAMHART"                               # set during LoRA training
 # ---------------------------------------------------------------------------
-
-DEFAULT_NEGATIVE_PROMPT = (
-    "blurry, low quality, distorted, photographic, photo, realistic, "
-    "watermark, signature, text, cropped, out of frame, worst quality, "
-    "low resolution, jpeg artifacts, ugly, duplicate, morbid, mutilated"
-)
 
 pipe = None
 
@@ -25,12 +19,11 @@ def load_pipeline():
         return
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    dtype = torch.float16 if device == "cuda" else torch.float32
+    dtype = torch.bfloat16 if device == "cuda" else torch.float32
 
-    pipe = StableDiffusionPipeline.from_pretrained(
+    pipe = FluxPipeline.from_pretrained(
         BASE_MODEL_ID,
         torch_dtype=dtype,
-        safety_checker=None,
     )
 
     try:
@@ -39,7 +32,7 @@ def load_pipeline():
         print(f"Warning: could not load LoRA weights from {LORA_MODEL_PATH}: {exc}")
 
     pipe = pipe.to(device)
-    pipe.enable_attention_slicing()
+    pipe.enable_model_cpu_offload()
 
 
 def generate_painting(prompt, steps, guidance, seed):
@@ -51,9 +44,10 @@ def generate_painting(prompt, steps, guidance, seed):
 
     result = pipe(
         prompt=full_prompt,
-        negative_prompt=DEFAULT_NEGATIVE_PROMPT,
         num_inference_steps=int(steps),
         guidance_scale=float(guidance),
+        height=1024,
+        width=1024,
         generator=generator,
     )
     return result.images[0]
@@ -65,7 +59,7 @@ def generate_painting(prompt, steps, guidance, seed):
 with gr.Blocks(title="Painting Space — Sam Burwood") as demo:
     gr.Markdown(
         "# Painting Space\n"
-        "Generate paintings in Sam Burwood's style. "
+        "Generate paintings in Sam Burwood's style using FLUX.1-dev. "
         f"The trigger keyword **`{TRIGGER_KEYWORD}`** is automatically prepended to every prompt."
     )
 
@@ -81,14 +75,14 @@ with gr.Blocks(title="Painting Space — Sam Burwood") as demo:
                 steps_slider = gr.Slider(
                     minimum=20,
                     maximum=50,
-                    value=30,
+                    value=28,
                     step=1,
                     label="Inference Steps",
                 )
                 guidance_slider = gr.Slider(
-                    minimum=7.0,
-                    maximum=12.0,
-                    value=8.5,
+                    minimum=3.5,
+                    maximum=7.5,
+                    value=3.5,
                     step=0.5,
                     label="Guidance Scale",
                 )
