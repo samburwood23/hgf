@@ -3,8 +3,9 @@ title: Painting Space - Sam Burwood
 emoji: 🎨
 colorFrom: blue
 colorTo: purple
-sdk: docker
-app_port: 7860
+sdk: gradio
+sdk_version: "5.25.0"
+app_file: app.py
 pinned: false
 license: mit
 hardware: gpu-t4-small
