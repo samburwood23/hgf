@@ -1,6 +1,8 @@
+import os
 import torch
 import gradio as gr
 from diffusers import FluxPipeline
+from huggingface_hub import login
 
 # ---------------------------------------------------------------------------
 # Configuration — update LORA_MODEL_PATH once your LoRA is uploaded to HF
@@ -9,6 +11,10 @@ BASE_MODEL_ID = "black-forest-labs/FLUX.1-dev"
 LORA_MODEL_PATH = "samburwood23/my-painting-style-lora"  # your HF model repo
 TRIGGER_KEYWORD = "SAMHART"                               # set during LoRA training
 # ---------------------------------------------------------------------------
+
+hf_token = os.environ.get("HF_TOKEN")
+if hf_token:
+    login(token=hf_token)
 
 pipe = None
 
