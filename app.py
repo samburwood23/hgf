@@ -7,7 +7,7 @@ from diffusers import FluxPipeline
 # ---------------------------------------------------------------------------
 BASE_MODEL_ID = "black-forest-labs/FLUX.1-dev"
 LORA_MODEL_PATH = "samburwood23/my-painting-style-lora"  # your HF model repo
-TRIGGER_KEYWORD = "TOK"                                   # set during LoRA training
+TRIGGER_KEYWORD = "SAMHART"                               # set during LoRA training
 # ---------------------------------------------------------------------------
 
 pipe = None
