@@ -30,6 +30,7 @@ def load_pipeline():
     pipe = FluxPipeline.from_pretrained(
         BASE_MODEL_ID,
         torch_dtype=dtype,
+        token=hf_token,
     )
 
     try:
