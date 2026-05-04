@@ -14,7 +14,11 @@ TRIGGER_KEYWORD = "SAMHART"                               # set during LoRA trai
 
 hf_token = os.environ.get("HF_TOKEN")
 if hf_token:
+    print(f"HF_TOKEN found (length={len(hf_token)}), logging in...")
     login(token=hf_token)
+    print("Login complete.")
+else:
+    print("WARNING: HF_TOKEN not set — gated model download will fail.")
 
 pipe = None
 
